@@ -1,0 +1,4 @@
+#Fri Dec 10 16:12:47 TRT 2021
+base.0=/home/kutay/Desktop/flutter_login_design/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
+renamed.0=classes.dex
+path.0=classes.dex
