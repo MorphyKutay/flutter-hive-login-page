@@ -29,11 +29,42 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  bool isCh = false;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool isVisible = true;
-//-----hive alanı------
   late Box box1;
+  @override
+  void instate(){
+    super.initState();
+    createBox();
+
+  }
+
+  void crcreateBox() async{
+    box1 = await Hive.openBox('logindata');
+    getdata();
+  }
+
+  void getdata()async{
+    if(box1.get('email')!=null){
+      emailController.text  = box1.get('email');
+      isCh = true;
+      setState(() {
+
+      });
+    }if(box1.get('pass')!=null){
+      passwordController.text = box1.get('pass');
+      isCh = true;
+      setState(() {
+
+      });
+    }
+
+  }
+
+//-----hive alanı------
   @override
   void initState() {
     // TODO: implement initState
@@ -61,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               padding: EdgeInsets.symmetric(vertical: 50),
               child: Image.asset(
-                'lib/resimler/deneme.jpg',
+                'resimler/deneme.jpg',
                 height: 200,
                 width: 200,
               ),
@@ -141,16 +172,16 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     ElevatedButton(
                         onPressed: () {
+                          login();
                         if(emailController.text != box1.get('email')){
                           print("yanlıs sifre veya mail adresi");
-
-                        }if(passwordController.text != box1.get('pass')){
+                        }else if(passwordController.text != box1.get('pass')){
                           print("yanlıs sifre vyea mail adresi");
 
                         }
                         else{
                           Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => ASayfasi()));
+                              MaterialPageRoute(builder: (context) => HomePage()));
     /*showDialog(context: context, builder: (context){
                             return SimpleDialog(
                               title: Text('Your submitted data '),
@@ -170,7 +201,22 @@ class _LoginPageState extends State<LoginPage> {
                         }}, child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                       child: Text('Submit'),
-                    ))
+
+                    )
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Remember Me',style: TextStyle(color: Colors.red),),
+                        Checkbox(value: isCh,
+                            onChanged: (value){
+                          isCh =! isCh;
+                          setState(() {
+                            
+                          });
+                            }),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -179,5 +225,11 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+  void login(){
+  if(isCh){
+    box1.put('email',emailController.value.text);
+    box1.put('pass', passwordController.value.text);
+  }
   }
 }
